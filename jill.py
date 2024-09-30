@@ -1,32 +1,24 @@
 import hashlib
 import sys
 
-pswd=sys.argv[0]
-dict=sys.argv[1]
+pswd=sys.argv[1]
+dict=sys.argv[2]
 
-
-with open(pswd, 'r') as file:
-    pswd=file.read()
-
-
-with open(dict, 'r') as file:
-    dict=file.read()
-    
 def reversible_hash(data):
     hash_object=hashlib.sha256(data.encode())
     return hash_object.hexdigest()
 
-def reverse_hash(hash_value):
-    for i in range(1000000):
-        test_data=str(i)
-        if reversible_hash(test_data)==hash_value:
-            return test_data
-    return None
+with open(pswd, 'r') as file:
+    passwords=file.readlines()
 
-hashed_data=reversible_hash(pswd)
-recovered_data=reverse_hash(hashed_data)
+with open(dict, 'r') as file:
+    words=file.readlines()
 
-print("Original Data: "+ pswd)
-print("Hashed Data: "+ hashed_data)
-print("Recovered Data: "+ recovered_data)
+for password in passwords:
+    password = password.split(':')
+    password[1] = password[1].strip()
+    for word in words:
+        word = word.strip()
+        if reversible_hash(word) == password[1]:
+            print(password[0] + ':' + word)
 
